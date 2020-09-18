@@ -1,3 +1,9 @@
+import pandas as pd
+from Curso import Curso
+from Disciplina import Disciplina
+from Aluno import Aluno
+
+
 class Controle:
 
     def __init__(self, arquivo):
@@ -13,7 +19,7 @@ class Controle:
     def lista_alunos(self):
 
         for i in self.cada_matricula:                                                                  # criando cada aluno como um objeto da classe Aluno
-            aluno_novo = Aluno(i, Disciplinas(i).lista_disc_semestre, self.arquivo_df[self.arquivo_df['MATRICULA'] == i]['COD_CURSO'], self.arquivo_df[self.arquivo_df['MATRICULA'] == i]['NOTA'], self.arquivo_df[self.arquivo_df['MATRICULA'] == i]['CARGA_HORARIA'])
+            aluno_novo = Aluno(i, Disciplina(i, self.arquivo_df).lista_disc_semestre, self.arquivo_df[self.arquivo_df['MATRICULA'] == i]['COD_CURSO'], self.arquivo_df[self.arquivo_df['MATRICULA'] == i]['NOTA'], self.arquivo_df[self.arquivo_df['MATRICULA'] == i]['CARGA_HORARIA'])
             self.todos_alunos.append(aluno_novo)
 
     def calcular_cr(self):
@@ -37,3 +43,21 @@ class Controle:
             carga_total_c = self.todos_cursos[j].carga.sum()
             coeficiente_c = round(numerador_c / carga_total_c, 2)
             self.cursos_cr.append([self.todos_cursos[j].codigo, coeficiente_c])
+
+
+if __name__ == '__main__':
+
+    iniciar = Controle('./Entrada/notas.csv')
+    iniciar.lista_alunos()
+    iniciar.calcular_cr()
+    iniciar.media_cursos()
+
+    print('------ O CR dos alunos é: ------')
+    for aluno in iniciar.alunos_cr:
+        print('{}  -  {}'.format(aluno[0], aluno[1]))
+    print('--------------------------------')
+
+    print('---- Média de CR dos cursos ----')
+    for curso in iniciar.cursos_cr:
+        print('{}   -   {}'.format(curso[0], curso[1]))
+    print('--------------------------------')
